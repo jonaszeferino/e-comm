@@ -5,6 +5,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { useCart } from "@/components/cart-provider"
 import { ShoppingCart } from "lucide-react"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface Product {
   id: string
@@ -20,12 +21,18 @@ interface ProductCardProps {
 
 export function ProductCard({ product }: ProductCardProps) {
   const { addItem } = useCart()
+  const router = useRouter()
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("pt-BR", {
       style: "currency",
       currency: "BRL",
     }).format(price)
+  }
+
+  const handleBuyNow = () => {
+    addItem(product)
+    router.push("/checkout")
   }
 
   return (
@@ -47,10 +54,13 @@ export function ProductCard({ product }: ProductCardProps) {
         <p className="text-2xl font-bold text-green-600">{formatPrice(product.price)}</p>
       </CardContent>
 
-      <CardFooter className="p-4 pt-0">
-        <Button onClick={() => addItem(product)} className="w-full" size="lg">
+      <CardFooter className="p-4 pt-0 space-y-2">
+        <Button onClick={() => addItem(product)} variant="outline" className="w-full" size="lg">
           <ShoppingCart className="h-4 w-4 mr-2" />
           Adicionar ao Carrinho
+        </Button>
+        <Button onClick={handleBuyNow} className="w-full" size="lg">
+          Comprar Agora
         </Button>
       </CardFooter>
     </Card>
